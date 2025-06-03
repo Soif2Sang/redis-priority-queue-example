@@ -1,0 +1,76 @@
+# docker-compose.yml (version mise à jour pour utiliser .env)
+version: '3.8'
+
+services:
+  redis: # DragonflyDB
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    ports:
+      - "127.0.0.1:6379:6379"
+    ulimits:
+      memlock: -1
+      nofile:
+        soft: 65535
+        hard: 65535
+    volumes:
+      - dragonfly_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -h 127.0.0.1 -p 6379 ping | grep PONG || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - queue_network
+
+  producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    environment:
+      REDIS_HOST: redis
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - queue_network
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    environment:
+      REDIS_HOST: redis
+      PYTHONUNBUFFERED: 1
+      LEASE_DURATION: "${LEASE_DURATION}"
+      WORKER_POLL_TIMEOUT: "${WORKER_POLL_TIMEOUT}"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - queue_network
+    deploy:
+      replicas: 3
+
+
+  monitor:
+    build:
+      context: ./monitor
+      dockerfile: Dockerfile
+    environment:
+      REDIS_HOST: redis
+      PYTHONUNBUFFERED: 1
+      MONITOR_INTERVAL: "${MONITOR_INTERVAL}"
+      LEASE_DURATION: "${LEASE_DURATION}"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - queue_network
+
+volumes:
+  dragonfly_data:
+
+networks:
+  queue_network:
+    driver: bridge
