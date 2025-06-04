@@ -29,6 +29,7 @@ services:
     environment:
       REDIS_HOST: redis
       PYTHONUNBUFFERED: 1
+    env_file: ".env"
     depends_on:
       redis:
         condition: service_healthy
@@ -42,8 +43,7 @@ services:
     environment:
       REDIS_HOST: redis
       PYTHONUNBUFFERED: 1
-      LEASE_DURATION: "${LEASE_DURATION}"
-      WORKER_POLL_TIMEOUT: "${WORKER_POLL_TIMEOUT}"
+    env_file: ".env"
     depends_on:
       redis:
         condition: service_healthy
@@ -60,8 +60,7 @@ services:
     environment:
       REDIS_HOST: redis
       PYTHONUNBUFFERED: 1
-      MONITOR_INTERVAL: "${MONITOR_INTERVAL}"
-      LEASE_DURATION: "${LEASE_DURATION}"
+    env_file: ".env"
     depends_on:
       redis:
         condition: service_healthy

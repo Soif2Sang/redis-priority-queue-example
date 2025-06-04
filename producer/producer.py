@@ -10,9 +10,6 @@ from redis_client_singleton import RedisClientSingleton
 MAIN_QUEUE_ZSET = os.getenv('MAIN_QUEUE_ZSET', 'my_priority_queue')
 JOB_PAYLOADS_HASH = os.getenv('JOB_PAYLOADS_HASH', 'job_payloads')
 
-print(MAIN_QUEUE_ZSET, "ici")
-print(JOB_PAYLOADS_HASH, "ici")
-
 def enqueue_job(job_data, priority_weight):
     """Enqueues a job into the priority queue."""
     redis_client = RedisClientSingleton.get_client()
