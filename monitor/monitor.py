@@ -2,7 +2,7 @@ import redis
 import json
 import time
 import os
-from shared.redis_client_singleton import RedisClientSingleton
+from redis_client_singleton import RedisClientSingleton
 
 # Configuration from environment variables
 MONITOR_INTERVAL = int(os.getenv('MONITOR_INTERVAL', 30))

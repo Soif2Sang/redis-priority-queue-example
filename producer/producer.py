@@ -4,11 +4,14 @@ import json
 import time
 import os
 import random
-from shared.redis_client_singleton import RedisClientSingleton
+from redis_client_singleton import RedisClientSingleton
 
 # Redis key names
 MAIN_QUEUE_ZSET = os.getenv('MAIN_QUEUE_ZSET', 'my_priority_queue')
 JOB_PAYLOADS_HASH = os.getenv('JOB_PAYLOADS_HASH', 'job_payloads')
+
+print(MAIN_QUEUE_ZSET, "ici")
+print(JOB_PAYLOADS_HASH, "ici")
 
 def enqueue_job(job_data, priority_weight):
     """Enqueues a job into the priority queue."""

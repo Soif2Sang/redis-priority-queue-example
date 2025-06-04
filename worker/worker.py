@@ -5,7 +5,7 @@ import os
 import random
 import uuid
 import threading
-from shared.redis_client_singleton import RedisClientSingleton
+from redis_client_singleton import RedisClientSingleton
 
 # --- Configuration ---
 WORKER_ID = os.getenv('WORKER_ID', f"worker-{uuid.uuid4().hex[:6]}")
